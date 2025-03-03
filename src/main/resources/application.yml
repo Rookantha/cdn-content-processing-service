@@ -1,0 +1,56 @@
+server:
+  port: 8082
+  servlet:
+    multipart:
+      max-file-size: 150MB
+      max-request-size: 150MB
+  ssl:
+    enabled: false
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/transcodedContentsDB
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: content-processing-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          deserializer:
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+                value:
+                  default.type: com.contentnexus.content.processing.service.entity.ProcessedContent
+                trusted:
+                  packages: "com.contentnexus.content.processing.service.entity"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    admin:
+      auto-create-topics: true
+    topics:
+      content_processed:
+        partitions: 3
+        replication-factor: 1
+
+
+google:
+  cloud:
+    project-id: graphic-perigee-434007-m7
+    transcoder:
+      location: us-central1
+    credentials:
+      file: D:/projects/CDN/GOOGLE_APPLICATION_CREDENTIALS/graphic-perigee-434007-m7-9ea448bbc77e.json
