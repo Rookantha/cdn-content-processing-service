@@ -82,7 +82,7 @@ google.cloud.credentials.file=/path/to/your/service-account-key.json
 google.gcs.input-bucket=your-input-bucket-name
 google.gcs.output-bucket=your-output-bucket-name
 google.gcs.archive-bucket=your-archive-bucket-name
-
+```
 
 Build the Application:
 
