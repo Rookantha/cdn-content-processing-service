@@ -82,3 +82,61 @@ google.cloud.credentials.file=/path/to/your/service-account-key.json
 google.gcs.input-bucket=your-input-bucket-name
 google.gcs.output-bucket=your-output-bucket-name
 google.gcs.archive-bucket=your-archive-bucket-name
+
+
+Build the Application:
+
+```bash
+mvn clean package
+```
+Run the Application:
+```bash
+
+mvn spring-boot:run
+```
+Alternatively, you can run the packaged JAR file:
+```bash 
+java -jar target/content-nexus-processing-service-0.0.1-SNAPSHOT.jar
+(Adjust the JAR file name based on your build output).
+``` 
+
+## Usage
+
+Once the service is running, it will automatically start listening for messages on the `video_ingested` Kafka topic. To trigger video processing:
+
+1. Produce a Kafka message to the `video_ingested` topic.
+2. The message payload should be a JSON representation of the `ProcessedContent` entity, containing at least the `rawVideoPath` (a GCS URI to the raw video file) and a unique `videoId`.
+
+The service will then:
+
+* Receive the `ProcessedContent` message.
+* Download the raw video from the specified GCS path.
+* Archive the raw video to the archive bucket.
+* Initiate a video transcoding job using the Google Cloud Transcoder API to generate an HD MP4 version.
+* Download the processed video from the Transcoder output location.
+* Archive the processed video to the archive bucket.
+* Update the `ProcessedContent` record in MongoDB with the processed video path and status.
+
+## Error Handling
+
+The service includes error handling mechanisms:
+
+* **Logging:** Uses SLF4j to log important events, warnings, and errors.
+* **Transcoder Job Status Monitoring:** Continuously checks the status of the Transcoder job and handles failures or cancellations.
+* **Database Updates on Failure:** If an error occurs during processing, the `ProcessedContent` entity's status is updated to "Failed," and error details are saved.
+
+## Future Enhancements
+
+* Implement more sophisticated error recovery and retry mechanisms.
+* Add support for different transcoding profiles and output formats.
+* Integrate with other content processing services.
+* Implement monitoring and alerting for service health and processing status.
+* Explore using Cloud Tasks or Workflows for more robust and scalable processing pipelines.
+
+## Contributing
+
+Contributions to this project are welcome. Please follow standard GitHub pull request practices.
+
+## License
+
+MIT License
