@@ -47,6 +47,11 @@
 			<version>2.42.0</version>
 		</dependency>
 		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>java-dotenv</artifactId>
+			<version>5.2.2</version>
+		</dependency>
+		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-video-transcoder</artifactId>
 			<version>1.47.0</version>

@@ -10,10 +10,10 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/transcodedContentsDB
+      uri: ${MONGODB_URI}
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP}
     consumer:
       group-id: content-processing-group
       auto-offset-reset: earliest
@@ -39,11 +39,10 @@ spring:
         partitions: 3
         replication-factor: 1
 
-
 google:
   cloud:
-    project-id: graphic-perigee-434007-m7
+    project-id: ${GOOGLE_PROJECT_ID}
     transcoder:
       location: us-central1
     credentials:
-      file: D:/projects/contentnexus/GOOGLE_APPLICATION_CREDENTIALS/graphic-perigee-434007-m7-3c7ebafb947e.json
+      file: ${GOOGLE_CREDENTIALS}
